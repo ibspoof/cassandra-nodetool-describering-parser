@@ -18,14 +18,14 @@ python range.py token_ranges.log
 Datacenter: Analytics
 
   10.0.10.3
-	- Total Ranges: 2
+	- Total Ranges: 2
 	- Primary Range: [-8394794879879642285, -8263966907725673834]
 	- Secondary Nodes: 10.0.10.4
 	- Secondary Ranges: [-8493839785352138176, -8394794879879642285]
 
   
   10.0.10.5
-	- Total Ranges: 4
+	- Total Ranges: 4
 	- Primary Range: [-3595551810977285504, -3554159910182809598]
 	- Secondary Nodes: 10.0.10.6, 10.0.10.3, 10.0.10.8
 	- Secondary Ranges: [-3684987882336778049, -3595551810977285504], [-3946643826644714951, -3815815854490746500], [-3815815854490746500, -3684987882336778049]
