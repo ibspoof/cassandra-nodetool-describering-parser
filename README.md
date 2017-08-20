@@ -18,6 +18,7 @@ python range.py token_ranges.log
 Datacenter: Analytics
   
   10.0.0.1
+    Rack: rack3
 	Total Ranges: 3
 	Primary: 
 		Range: [8482013527982287894, 8612841500136256345]

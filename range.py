@@ -106,6 +106,7 @@ if __name__ == """__main__""":
                         linked_by_rack[n['rack']].append(n['ip'])
 
                 print "  %s" % node
+                print "\tRack: %s" % cur_node['rack']
                 print "\tTotal Ranges: %s" % (cur_node['range_cnt'])
                 print "\tPrimary: "
                 print "\t\tRange: [%s, %s]" % (cur_node['token_start'], cur_node['token_end'])
