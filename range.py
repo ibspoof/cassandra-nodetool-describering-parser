@@ -76,6 +76,11 @@ if __name__ == """__main__""":
 
         mean_range_size = round(sum(RANGE_SIZES[dc])) / max(len(RANGE_SIZES[dc]), 1)
         sorted_range = sorted(RANGE_SIZES[dc])
+        smallest = sorted_range[0]
+        largest = sorted_range[len(sorted_range) - 1]
+        smallest_node = ""
+        largest_node = ""
+
 
         print "Data Center: %s" % dc
         print ""
@@ -83,6 +88,11 @@ if __name__ == """__main__""":
         for node in CLUSTER_DETAILS:
             if CLUSTER_DETAILS[node]['dc'] == dc:
                 cur_node = CLUSTER_DETAILS[node]
+
+                if cur_node['size'] == smallest:
+                    smallest_node = cur_node['ip']
+                if cur_node['size'] == largest:
+                    largest_node = cur_node['ip']
 
                 linked_nodes = []
                 linked_ranges = []
@@ -95,14 +105,12 @@ if __name__ == """__main__""":
                     else:
                         linked_by_rack[n['rack']].append(n['ip'])
 
-                diff_percent = abs((float(cur_node['size'] - float(mean_range_size))) / float(mean_range_size))
-
                 print "  %s" % node
                 print "\tTotal Ranges: %s" % (cur_node['range_cnt'])
                 print "\tPrimary: "
                 print "\t\tRange: [%s, %s]" % (cur_node['token_start'], cur_node['token_end'])
                 print "\t\tRange Size: %s" % cur_node['size']
-                print "\t\tDeviation from mean: %.2f" % diff_percent
+                print "\t\t%% of Mean: %.2f" % (cur_node['size'] / mean_range_size)
                 print "\tSecondary:"
                 print "\t\tNodes: %s" % ", ".join(linked_nodes)
                 print "\t\tRacks:"
@@ -115,8 +123,9 @@ if __name__ == """__main__""":
                 print ""
 
         print " "
-        print "  Token range sizes:"
-        print "\tSmallest: %d" % sorted_range[0]
-        print "\tLargest: %d" % sorted_range[len(sorted_range) - 1]
-        print "\tMean: %d" % mean_range_size
+        print "  Data Center Stats:"
+        print "\tNode Count: %d" % len(RANGE_SIZES[dc])
+        print "\tMean Range Size:     %d" % mean_range_size
+        print "\tSmallest Range Size: %d\t\t(%s)" % (smallest, smallest_node)
+        print "\tLargest Range Size:  %d\t(%s)" % (largest, largest_node)
 

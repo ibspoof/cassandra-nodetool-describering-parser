@@ -22,7 +22,7 @@ Datacenter: Analytics
 	Primary: 
 		Range: [8482013527982287894, 8612841500136256345]
 		Range Size: 130827972153968451
-		Deviation from mean: 0.37
+		% of Mean: 0.37
 	Secondary:
 		Nodes: 10.0.0.2, 10.0.0.3
 		Racks:
@@ -31,13 +31,15 @@ Datacenter: Analytics
 		Ranges: 
 		  - 10.0.0.2: [8351185555828319443, 8482013527982287894]
 		  - 10.0.0.3: [8220357583674350992, 8351185555828319443]
-
+ 
   ...
   
-  Token range sizes:
-        Smallest: 739141085615637
-        Largest: 18355649041246788292
-        Mean: 207408463742901568
+  Data Center Stats:
+        Node Count: 10
+        Mean Range Size:     207408463742901568
+        Smallest Range Size: 739141085615637            (10.0.0.5)
+        Largest Range Size:  18355649041246788292       (10.0.0.15)
+
 ```
 
 #### Current Limitations
