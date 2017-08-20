@@ -2,16 +2,6 @@
 import re
 import sys
 
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-
 DATA_CENTERS = []
 RANGE_SIZES = {}
 REGEX_START_END_COMP = re.compile(r'.*TokenRange\(start_token:(.*), end_token:(.*), '
@@ -64,7 +54,6 @@ if __name__ == """__main__""":
         if token_details['dc'] not in DATA_CENTERS:
             DATA_CENTERS.append(token_details['dc'])
 
-
         CLUSTER_DETAILS[token_details['ip']] = token_details
 
     for node in CLUSTER_DETAILS:
@@ -85,14 +74,10 @@ if __name__ == """__main__""":
 
     for dc in DATA_CENTERS:
 
-
-        # avg_range_size = sum(RANGE_SIZES[dc]) / len(RANGE_SIZES[dc])
-        avg_range_size = float(sum(RANGE_SIZES[dc])) / max(len(RANGE_SIZES[dc]), 1)
+        mean_range_size = round(sum(RANGE_SIZES[dc])) / max(len(RANGE_SIZES[dc]), 1)
         sorted_range = sorted(RANGE_SIZES[dc])
-        smallest = sorted_range[0]
-        largest = sorted_range[len(sorted_range) - 1]
 
-        print "Datacenter: %s" % dc
+        print "Data Center: %s" % dc
         print ""
 
         for node in CLUSTER_DETAILS:
@@ -101,24 +86,37 @@ if __name__ == """__main__""":
 
                 linked_nodes = []
                 linked_ranges = []
+                linked_by_rack = {}
                 for n in cur_node['neighbors']:
-                    linked_nodes.append("%s (%s)" % (n['ip'], n['rack']))
+                    linked_nodes.append("%s" % n['ip'])
                     linked_ranges.append("%s: [%s, %s]" % (n['ip'], n['token_start'], n['token_end']))
+                    if n['rack'] not in linked_by_rack:
+                        linked_by_rack[n['rack']] = [n['ip']]
+                    else:
+                        linked_by_rack[n['rack']].append(n['ip'])
 
-                diff_percent = abs((float(cur_node['size'] - float(avg_range_size))) / float(avg_range_size)) * 100.0
+                diff_percent = abs((float(cur_node['size'] - float(mean_range_size))) / float(mean_range_size))
 
                 print "  %s" % node
-                print "\t- Total Ranges: %s" % (cur_node['range_cnt'])
-                print "\t- Primary Range: [%s, %s]" % (cur_node['token_start'], cur_node['token_end'])
-                print "\t- Primary Range Size: %s    (Diff from avg: %d%%)" % (cur_node['size'], diff_percent)
-                print "\t- Secondary Nodes: %s" % ", ".join(linked_nodes)
-                print "\t- Secondary Ranges: "
+                print "\tTotal Ranges: %s" % (cur_node['range_cnt'])
+                print "\tPrimary: "
+                print "\t\tRange: [%s, %s]" % (cur_node['token_start'], cur_node['token_end'])
+                print "\t\tRange Size: %s" % cur_node['size']
+                print "\t\tDeviation from mean: %.2f" % diff_percent
+                print "\tSecondary:"
+                print "\t\tNodes: %s" % ", ".join(linked_nodes)
+                print "\t\tRacks:"
+                for r in linked_by_rack:
+                    ips = ", ".join(linked_by_rack[r])
+                    print "\t\t  - %s: %s" % (r, ips)
+                print "\t\tRanges: "
                 for r in linked_ranges:
-                    print "\t\t%s" % r
+                    print "\t\t  - %s" % r
                 print ""
 
+        print " "
         print "  Token range sizes:"
-        print "\tSmallest: %d" % smallest
-        print "\tLargest: %d" % largest
-        print "\tAverage: %d" % avg_range_size
+        print "\tSmallest: %d" % sorted_range[0]
+        print "\tLargest: %d" % sorted_range[len(sorted_range) - 1]
+        print "\tMean: %d" % mean_range_size
 
