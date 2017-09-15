@@ -7,14 +7,20 @@ RANGE_SIZES = {}
 REGEX_START_END_COMP = re.compile(r'.*TokenRange\(start_token:(.*), end_token:(.*), '
                                   r'endpoints:\[(.*)\], rpc_.* endpoint_details:\[(.*)]')
 REGEX_ENDPNT_COMP = re.compile(r'EndpointDetails\(host:(.*), datacenter:(.*), rack:(.*)')
+REGEX_STATUS_COMP = re.compile(r'^U.* (\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)\s(.*)\s([A-Za-z]+) (.*) .*')
 REP_FACTOR = 3
 
 if __name__ == """__main__""":
+
+    nodetool_status_input = None
 
     if len(sys.argv) < 2:
         token_input = sys.stdin.read()
     else:
         token_input = open(sys.argv[1]).read()
+        print sys.argv
+        if len(sys.argv) > 2:
+            nodetool_status_input = open(sys.argv[2]).read()
 
     CLUSTER_DETAILS = {}
 
@@ -72,6 +78,14 @@ if __name__ == """__main__""":
         CLUSTER_DETAILS[node]['range_cnt'] = found_cnt
         CLUSTER_DETAILS[node]['neighbors'] = secondary_ranges
 
+    NODE_TOOL_STATUS = {}
+
+    if nodetool_status_input is not None:
+        for line in nodetool_status_input.split("\n"):
+            res = REGEX_STATUS_COMP.match(line)
+            if res is not None:
+                NODE_TOOL_STATUS[res.group(1).strip()] = res.group(2).strip() + " " + res.group(3).strip()
+
     for dc in DATA_CENTERS:
 
         mean_range_size = round(sum(RANGE_SIZES[dc])) / max(len(RANGE_SIZES[dc]), 1)
@@ -80,7 +94,6 @@ if __name__ == """__main__""":
         largest = sorted_range[len(sorted_range) - 1]
         smallest_node = ""
         largest_node = ""
-
 
         print "Data Center: %s" % dc
         print ""
@@ -108,6 +121,8 @@ if __name__ == """__main__""":
                 print "  %s" % node
                 print "\tRack: %s" % cur_node['rack']
                 print "\tTotal Ranges: %s" % (cur_node['range_cnt'])
+                if node in NODE_TOOL_STATUS:
+                    print "\tData Size: %s" % NODE_TOOL_STATUS[node]
                 print "\tPrimary: "
                 print "\t\tRange: [%s, %s]" % (cur_node['token_start'], cur_node['token_end'])
                 print "\t\tRange Size: %s" % cur_node['size']
