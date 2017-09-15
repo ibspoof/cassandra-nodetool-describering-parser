@@ -18,7 +18,6 @@ if __name__ == """__main__""":
         token_input = sys.stdin.read()
     else:
         token_input = open(sys.argv[1]).read()
-        print sys.argv
         if len(sys.argv) > 2:
             nodetool_status_input = open(sys.argv[2]).read()
 
