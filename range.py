@@ -7,7 +7,7 @@ RANGE_SIZES = {}
 REGEX_START_END_COMP = re.compile(r'.*TokenRange\(start_token:(.*), end_token:(.*), '
                                   r'endpoints:\[(.*)\], rpc_.* endpoint_details:\[(.*)]')
 REGEX_ENDPNT_COMP = re.compile(r'EndpointDetails\(host:(.*), datacenter:(.*), rack:(.*)')
-REGEX_STATUS_COMP = re.compile(r'^U.* (\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)\s(.*)\s([A-Za-z]+) (.*) .*')
+REGEX_STATUS_COMP = re.compile(r'^.* (\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)\s(.*)\s([A-Za-z]+) (.*) .*')
 REP_FACTOR = 3
 
 if __name__ == """__main__""":
