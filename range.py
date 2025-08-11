@@ -34,7 +34,7 @@ if __name__ == """__main__""":
         token_details['token_start'] = st_end_res.group(1)
         token_details['token_end'] = st_end_res.group(2)
         token_details['ip'] = st_end_res.group(3).split(", ")[0]
-        token_details['size'] = abs(long(token_details['token_end']) - long(token_details['token_start']))
+        token_details['size'] = abs(int(token_details['token_end']) - int(token_details['token_start']))
 
         replicas = st_end_res.group(4)
 
@@ -94,8 +94,8 @@ if __name__ == """__main__""":
         smallest_node = ""
         largest_node = ""
 
-        print "Data Center: %s" % dc
-        print ""
+        print("Data Center: %s" % dc)
+        print("")
 
         for node in CLUSTER_DETAILS:
             if CLUSTER_DETAILS[node]['dc'] == dc:
@@ -117,30 +117,29 @@ if __name__ == """__main__""":
                     else:
                         linked_by_rack[n['rack']].append(n['ip'])
 
-                print "  %s" % node
-                print "\tRack: %s" % cur_node['rack']
-                print "\tTotal Ranges: %s" % (cur_node['range_cnt'])
+                print("  %s" % node)
+                print("\tRack: %s" % cur_node['rack'])
+                print("\tTotal Ranges: %s" % (cur_node['range_cnt']))
                 if node in NODE_TOOL_STATUS:
-                    print "\tData Size: %s" % NODE_TOOL_STATUS[node]
-                print "\tPrimary: "
-                print "\t\tRange: [%s, %s]" % (cur_node['token_start'], cur_node['token_end'])
-                print "\t\tRange Size: %s" % cur_node['size']
-                print "\t\t%% of Mean: %.2f" % (cur_node['size'] / mean_range_size)
-                print "\tSecondary:"
-                print "\t\tNodes: %s" % ", ".join(linked_nodes)
-                print "\t\tRacks:"
+                    print("\tData Size: %s" % NODE_TOOL_STATUS[node])
+                print("\tPrimary: ")
+                print("\t\tRange: [%s, %s]" % (cur_node['token_start'], cur_node['token_end']))
+                print("\t\tRange Size: %s" % cur_node['size'])
+                print("\t\t%% of Mean: %.2f" % (cur_node['size'] / mean_range_size))
+                print("\tSecondary:")
+                print("\t\tNodes: %s" % ", ".join(linked_nodes))
+                print("\t\tRacks:")
                 for r in linked_by_rack:
                     ips = ", ".join(linked_by_rack[r])
-                    print "\t\t  - %s: %s" % (r, ips)
-                print "\t\tRanges: "
+                    print("\t\t  - %s: %s" % (r, ips))
+                print("\t\tRanges: ")
                 for r in linked_ranges:
-                    print "\t\t  - %s" % r
-                print ""
+                    print("\t\t  - %s" % r)
+                print("")
 
-        print " "
-        print "  Data Center Stats:"
-        print "\tNode Count: %d" % len(RANGE_SIZES[dc])
-        print "\tMean Range Size:     %d" % mean_range_size
-        print "\tSmallest Range Size: %d\t\t(%s)" % (smallest, smallest_node)
-        print "\tLargest Range Size:  %d\t(%s)" % (largest, largest_node)
-
+        print(" ")
+        print("  Data Center Stats:")
+        print("\tNode Count: %d" % len(RANGE_SIZES[dc]))
+        print("\tMean Range Size:     %d" % mean_range_size)
+        print("\tSmallest Range Size: %d\t\t(%s)" % (smallest, smallest_node))
+        print("\tLargest Range Size:  %d\t(%s)" % (largest, largest_node))
